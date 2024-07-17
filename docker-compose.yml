@@ -1,0 +1,82 @@
+services:
+  db:
+    image: postgres
+    restart: unless-stopped
+    environment:
+      - PGUSER
+      - POSTGRES_PASSWORD
+      - POSTGRES_DB
+      - POSTGRES_SERVER
+    volumes:
+      - db-data:/var/lib/postgresql/data
+    ports:
+      - 5432:5432
+    healthcheck:
+      test: [ "CMD", "pg_isready" ]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  backend:
+    build: ./backend
+    command: uvicorn main:app --host 0.0.0.0 --reload
+    volumes:
+      - ./backend/app:/app
+    ports:
+      - 8000:8000
+    environment:
+      - IN_PROD
+      - CORS_ORIGINS
+      - ROOT_ROUTE
+      - HMAC_KEY
+      - FRONTEND_URL
+      - POPULATE_DUMMY_DATA
+      - TWILIO_AUTH_TOKEN
+      - TWILIO_ACCOUNT_SID
+      - TWILIO_SENDER_NUMBER
+      - DEV_RECEIVER_NUMBER
+      - POSTGRES_SERVER
+      - PGUSER
+      - POSTGRES_PASSWORD
+      - POSTGRES_DB
+      - POSTGRES_TEST_DB
+      - SMTP_USERNAME
+      - SMTP_PASSWORD
+      - SMTP_SERVER
+      - SMTP_FROM_NAME
+      - JWT_SECRET
+      - JWT_ALGORITHM
+      - CLIENT_ID
+      - CLIENT_SECRET
+      - CODE_LENGTH
+      - CODE_EXPIRE_MINUTES
+      - MAX_CODE_TRIES
+      - MAX_CODES_CREATED
+      - CODE_MINUTES_RANGE_LIMIT
+      - ENABLED_SEARCH_KEYS
+      - ENABLED_VERIFICATION_SEARCH_KEYS
+      - MUST_VERIFY_SEARCH_KEYS
+      - CLOUDFLARE_SECRET_KEY
+      - CLOUDFLARE_ENABLED
+    depends_on:
+      db:
+        condition: service_healthy
+
+  frontend:
+    build: ./frontend
+    volumes:
+      - ./frontend/app:/app
+    ports:
+      - 3000:3000
+    environment:
+      - WATCHPACK_POLLING=true
+      - NEXT_PUBLIC_BACKEND_URL
+      - NEXT_PUBLIC_PROD
+      - NEXT_PUBLIC_ENABLED_SEARCH_KEYS
+      - NEXT_PUBLIC_ENABLED_VERIFICATION_SEARCH_KEYS
+      - NEXT_PUBLIC_CLOUDFLARE_SITE_KEY
+      - NEXT_PUBLIC_CLOUDFLARE_ENABLED
+      - NEXT_PUBLIC_MUST_VERIFY_SEARCH_KEYS
+
+volumes:
+  db-data:
