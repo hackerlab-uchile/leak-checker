@@ -27,6 +27,7 @@ export default function Turnstile({
 
   useEffect(() => {
     if (needReset && currentWidgetId) {
+      onTokenChange?.(null);
       (window as any).turnstile.reset(currentWidgetId);
       setNeedReset(false);
     }

@@ -46,16 +46,14 @@ const CLOUDFLARE_ENABLED = process.env.NEXT_PUBLIC_CLOUDFLARE_ENABLED;
 const CLOUDFLARE_SITE_KEY = process.env.NEXT_PUBLIC_CLOUDFLARE_SITE_KEY
   ? process.env.NEXT_PUBLIC_CLOUDFLARE_SITE_KEY
   : "";
-const MUST_VERIFY_SEARCH_KEY = process.env.NEXT_PUBLIC_MUST_VERIFY_SEARCH_KEY
-  ? process.env.NEXT_PUBLIC_MUST_VERIFY_SEARCH_KEY.split(",")
-  : ["email"];
+const MUST_VERIFY_SEARCH_KEYS = process.env.NEXT_PUBLIC_MUST_VERIFY_SEARCH_KEYS
+  ? process.env.NEXT_PUBLIC_MUST_VERIFY_SEARCH_KEYS.split(",")
+  : [];
+const ENABLED_SEARCH_KEYS = ["email", "phone", "rut"];
 
 export default function Home() {
   const { user } = useAuth();
   const router = useRouter();
-  const configEnabledSearchKeys = process.env.NEXT_PUBLIC_ENABLED_SEARCH_KEYS
-    ? process.env.NEXT_PUBLIC_ENABLED_SEARCH_KEYS.split(",")
-    : ["email", "phone", "rut"];
   const searchedValue = router.query.search ? String(router.query.search) : "";
   const searchedType = router.query.type ? String(router.query.type) : "";
   const [queryLoaded, setQueryLoaded] = useState(false);
@@ -68,9 +66,10 @@ export default function Home() {
   const [dataLeaks, setDataLeaks] = useState<Array<DataLeak>>([]);
   const [columns, setColumns] = useState<ColumnDef<TypesLeak>[]>([]);
   const [tableData, setTableData] = useState<TypesLeak[]>([]);
-  const [tabValue, setTabValue] = useState<string>(configEnabledSearchKeys[0]);
+  const [tabValue, setTabValue] = useState<string>(ENABLED_SEARCH_KEYS[0]);
   const [turnstileToken, setTurnstileToken] = useState<string | null>(null);
   const [turnstileNeedReset, setTurnstileNeedReset] = useState<boolean>(false);
+  const totalNumberTabs = ENABLED_SEARCH_KEYS.length;
 
   async function handleSearch(query: string, queryType: QueryType) {
     const searchQuery: SearchQuery = { value: query, dtype: queryType };
@@ -144,7 +143,7 @@ export default function Home() {
         setSearch: setSearchEmail,
         inputHint: "Consulte un email...",
         name: "correo",
-        needsAuth: MUST_VERIFY_SEARCH_KEY.includes("email"),
+        needsAuth: MUST_VERIFY_SEARCH_KEYS.includes("email"),
       },
       {
         title: "RUT",
@@ -171,7 +170,7 @@ export default function Home() {
         setSearch: setSearchRut,
         inputHint: "Consulte un RUT...",
         name: "RUT",
-        needsAuth: MUST_VERIFY_SEARCH_KEY.includes("rut"),
+        needsAuth: MUST_VERIFY_SEARCH_KEYS.includes("rut"),
       },
       {
         title: "Número telefónico",
@@ -186,12 +185,12 @@ export default function Home() {
         setSearch: setSearchPhone,
         inputHint: "Consulte un número telefónico...",
         name: "número telefónico",
-        needsAuth: MUST_VERIFY_SEARCH_KEY.includes("phone"),
+        needsAuth: MUST_VERIFY_SEARCH_KEYS.includes("phone"),
       },
     ];
     let enabledKeys = [];
     for (let i = 0; i < availableSearchKeys.length; i++) {
-      if (configEnabledSearchKeys.includes(availableSearchKeys[i].value))
+      if (ENABLED_SEARCH_KEYS.includes(availableSearchKeys[i].value))
         enabledKeys.push(availableSearchKeys[i]);
     }
     return enabledKeys;
@@ -253,14 +252,14 @@ export default function Home() {
           onValueChange={(value) => setTabValue(value)}
           className="w-[90%] md:w-[80%] max-w-[1280px]"
         >
-          <TabsList
-            className={`grid w-full grid-cols-${configEnabledSearchKeys.length}`}
-          >
+          {/* <TabsList className={`grid w-full grid-cols-${totalNumberTabs}`}> */}
+          <TabsList className={`flex w-full flex-row justify-around`}>
             {searchKeys.map((item) => (
               <TabsTrigger
                 onClick={clearSearchIput}
                 key={item.value}
                 value={item.value}
+                className="w-full"
               >
                 {item.title}
               </TabsTrigger>
@@ -340,7 +339,6 @@ export default function Home() {
                               }
                               setSearchTerm={item.setSearch}
                               handleFormat={item.inputFormatting}
-                              disabled={item.needsAuth}
                             />
                           )}
                         </>

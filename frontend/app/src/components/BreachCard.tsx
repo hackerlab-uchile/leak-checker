@@ -21,7 +21,7 @@ export default function BreachCard({
       <h3 className="font-bold text-xl">
         {`${breach.name} (${breach.breach_date.slice(0, 4)})`}
       </h3>
-      <p>{breach.description}</p>
+      <p className="text-justify">{breach.description}</p>
       <p>
         <b>Tipos de datos encontrados: </b>
         {breach.breached_data.join(", ")}

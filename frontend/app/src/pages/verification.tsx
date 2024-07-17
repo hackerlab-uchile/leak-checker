@@ -286,9 +286,7 @@ const SearchContent = ({
           defaultValue={configEnabledVerificationKeys[0]}
           className="w-[90%] md:w-[80%] max-w-lg"
         >
-          <TabsList
-            className={`grid w-full grid-cols-${configEnabledVerificationKeys.length}`}
-          >
+          <TabsList className={`flex w-full flex-row justify-around`}>
             {searchKeys.map((item) => (
               <TabsTrigger
                 onClick={(e) => {
@@ -297,6 +295,7 @@ const SearchContent = ({
                 }}
                 key={item.value}
                 value={item.value}
+                className="w-full"
               >
                 {item.title}
               </TabsTrigger>
@@ -308,6 +307,7 @@ const SearchContent = ({
                   setInputError("");
                 }}
                 value="rut"
+                className="w-full"
               >
                 {"RUT"}
               </TabsTrigger>

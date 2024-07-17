@@ -5,13 +5,11 @@ export default function Search({
   placeholder,
   searchTerm,
   setSearchTerm,
-  disabled = false,
   handleFormat = (v: string) => v,
 }: {
   placeholder: string;
   searchTerm: string;
   setSearchTerm: Dispatch<SetStateAction<string>>;
-  disabled: boolean;
   handleFormat?: (v: string) => string;
 }) {
   const [formattedValue, setFormattedValue] = useState<string>(searchTerm);
@@ -39,7 +37,6 @@ export default function Search({
         onChange={(e) => {
           handleSearch(e);
         }}
-        disabled={disabled}
       />
       <FaSearch className="absolute left-3 top-1/2 h-[18px] w-[18px] -translate-y-1/2 text-gray-500 peer-focus:text-gray-900" />
     </div>
