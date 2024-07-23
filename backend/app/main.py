@@ -2,7 +2,7 @@ import os
 
 import init_db
 from api.route_base import api_router
-from core.config import IN_PROD, POPULATE_DUMMY_DATA
+from core.config import IN_PROD, POPULATE_DUMMY_DATA, SESSION_MIDDLEWARE_SECRET
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from populate_db import populate_dummy_data
@@ -31,7 +31,7 @@ def init_app():
         allow_methods=["*"],
         allow_headers=["*"],
     )
-    new_app.add_middleware(SessionMiddleware, secret_key="random super random string")
+    new_app.add_middleware(SessionMiddleware, secret_key=SESSION_MIDDLEWARE_SECRET)
 
     return new_app
 

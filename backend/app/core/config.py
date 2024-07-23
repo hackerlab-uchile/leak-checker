@@ -44,6 +44,9 @@ IN_PROD: bool = get_bool_from_env("IN_PROD", False)
 HMAC_KEY: str = get_env_value("HMAC_KEY")
 BACKEND_URL: str = get_env_value("BACKEND_URL", "http://localhost:8000")
 POPULATE_DUMMY_DATA: bool = get_bool_from_env("POPULATE_DUMMY_DATA", False)
+SESSION_MIDDLEWARE_SECRET: str = get_env_value(
+    "SESSION_MIDDLEWARE_SECRET", "Please specify a new secret for this variable"
+)
 
 # Database connection
 POSTGRES_USER: str = get_env_value("PGUSER")
