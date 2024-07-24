@@ -84,7 +84,11 @@ export default function SessionInfoButton() {
               {width && width >= SizeType.SM ? (
                 <>
                   <DropdownMenuItem asChild>
-                    <Link href={`/?search=${user.value}&type=${user.dtype}`}>
+                    <Link
+                      href={`/?search=${encodeURIComponent(user.value)}&type=${
+                        user.dtype
+                      }`}
+                    >
                       <IoSearch className="mr-1" size={"1.2em"}></IoSearch>
                       Ver filtraciones
                     </Link>

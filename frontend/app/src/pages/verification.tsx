@@ -41,6 +41,7 @@ import Link from "next/link";
 import { VerificationResponse } from "@/models/VerificationResponse";
 import MobileNumberInput from "@/components/MobileNumberInput";
 import { useAuth } from "@/contexts/AuthContext";
+import { validateMobileNumber } from "@/utils/VerificationSearchValidation";
 
 export default function VerificationHome() {
   const [step, setStep] = useState<number>(0);
@@ -243,26 +244,25 @@ const SearchContent = ({
 
   async function handlePhoneSubmit() {
     let cleanSearch = search.replace(/\s+/g, "");
-    let phoneRegex = /^[\d]{8}$/;
-    let validPhoneNumber = phoneRegex.test(cleanSearch);
+    let validationResult = validateMobileNumber(cleanSearch);
     if (!cleanSearch || waitingResponse) {
       return;
-    } else if (!validPhoneNumber) {
-      setInputError("Formato de número celular inválido");
+    } else if (!validationResult.valid) {
+      setInputError(validationResult.reason);
       return;
     }
     let finalSearch = `+569${cleanSearch}`;
-    setSearch(finalSearch);
     setWaitingResponse(true);
-    setType(QueryType.Phone);
     let response: VerificationResponse = await sendVerificationSMS(finalSearch);
-    setWaitingResponse(false);
     if (response.code_length === undefined) {
       setInputError(response.message);
     } else {
+      setSearch(finalSearch);
+      setType(QueryType.Phone);
       setVerificationCodeLength(response.code_length);
       setStep(step + 1);
     }
+    setWaitingResponse(false);
   }
   function getEnabledVerificationKeys() {
     let enabledKeys = [];

@@ -119,7 +119,7 @@ export default function Home() {
   async function handlePhoneSubmit() {
     const phoneQuery = searchPhone.trim();
     if (phoneQuery) {
-      handleSearch(phoneQuery, QueryType.Phone);
+      handleSearch(`+56${phoneQuery}`, QueryType.Phone);
     }
   }
 
@@ -202,8 +202,12 @@ export default function Home() {
     if (searchedValue) {
       for (let i = 0; i < searchKeys.length; i++) {
         if (searchKeys[i]["value"] === searchedType) {
+          let userSearch = searchedValue;
+          if (searchedType === "phone") {
+            userSearch = searchedValue.replace(/^[\s|\+]?56/g, "");
+          }
           setTabValue(searchedType);
-          searchKeys[i].setSearch(searchedValue);
+          searchKeys[i].setSearch(userSearch);
           setQueryLoaded(true);
         }
       }
