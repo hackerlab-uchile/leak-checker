@@ -135,7 +135,7 @@ def get_sensitive_breaches_demo(
 
 
 def looks_like_email(value: str) -> bool:
-    # NO se usa regex, porque no es necesario para una simple demo
+    # This is used only for demo purposes
     dot_splitted = value.split(".")
     arroba_splitted = value.split("@")
     result = (

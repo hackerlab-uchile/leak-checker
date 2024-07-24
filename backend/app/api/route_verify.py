@@ -199,7 +199,7 @@ async def oauth_verification(request: Request):
 
     # TODO si se desea usar Clave Única:
     # 1) Debería tomar la respuesta, generar un JWT con el RUT de respuesta
-    # 2) associated_value debería corresopdner al RUT entregado por CU
+    # 2) associated_value debería corresponder al RUT entregado por CU
     # 3) Entregar JWT al usuario
     associated_value = "11111111-1"
     token = create_jwt_token(associated_value, "rut")
